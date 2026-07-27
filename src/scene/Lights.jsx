@@ -1,15 +1,20 @@
-export default function Lights() {
+export function Lights() {
   return (
     <>
-      <ambientLight intensity={1.2} />
-
+      <ambientLight intensity={0.4} />
       <directionalLight
-        position={[30, 40, 20]}
-        intensity={2.5}
+        position={[50, 30, 20]}
+        intensity={1.2}
         castShadow
         shadow-mapSize-width={2048}
         shadow-mapSize-height={2048}
+        shadow-bias={-0.0001}
+      />
+      <hemisphereLight
+        color="#87ceeb"
+        groundColor="#4a7c59"
+        intensity={0.6}
       />
     </>
-  );
+  )
 }
