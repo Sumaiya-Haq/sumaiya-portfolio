@@ -1,16 +1,18 @@
-import { Canvas } from "@react-three/fiber";
-import Experience from "./scene/Experience";
+import { Suspense, useState, useEffect } from 'react'
+import { Experience } from './scene/Experience'
+import { LoadingScreen } from './ui/LoadingScreen'
 
-export default function App() {
+function App() {
+  const [progress, setProgress] = useState(0)
+
   return (
-    <Canvas
-      camera={{
-        position: [8, 8, 8],
-        fov: 60,
-      }}
-    >
-      <color attach="background" args={["skyblue"]} />
-      <Experience />
-    </Canvas>
-  );
+    <>
+      <LoadingScreen progress={progress} />
+      <Suspense fallback={null}>
+        <Experience onProgress={setProgress} />
+      </Suspense>
+    </>
+  )
 }
+
+export default App

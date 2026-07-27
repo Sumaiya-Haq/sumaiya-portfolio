@@ -1,32 +1,43 @@
 import { OrbitControls } from "@react-three/drei";
+import Terrain from "../world/Terrain";
+import VillageRoad from "../world/VillageRoad";
+import MainHouse from "../houses/MainHouse";
+import CoconutTree from "../world/CoconutTree";
+import TeaStall from "../houses/TeaStall";
+import River from "../world/River";
+import Fence from "../world/Fence";
+import Bench from "../world/Bench";
+import Lights from "./Lights";
+
 
 export default function Experience() {
   return (
     <>
-      <ambientLight intensity={2} />
+      <Lights />
 
-      <directionalLight
-        position={[10, 20, 10]}
-        intensity={2}
-      />
+      <Terrain />
 
-      {/* Ground */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[20, 20]} />
-        <meshStandardMaterial color="green" />
-      </mesh>
+      <VillageRoad />
 
-      {/* Cube */}
-      <mesh position={[0, 1, 0]}>
-        <boxGeometry args={[2, 2, 2]} />
-        <meshStandardMaterial color="red" />
-      </mesh>
+          <MainHouse />
+          <Fence />
+          <Bench/>
 
-      <gridHelper args={[20, 20]} />
+<CoconutTree position={[-8, 0, -18]} />
+<CoconutTree position={[8, 0, -18]} />
+          <CoconutTree position={[15, 0, -25]} />
+        
+          <TeaStall />
+          <River />
 
       <axesHelper args={[5]} />
 
-      <OrbitControls />
+      <OrbitControls
+        makeDefault
+        target={[0, 0, 0]}
+        minDistance={8}
+        maxDistance={80}
+      />
     </>
   );
 }
