@@ -1,13 +1,42 @@
-import { Canvas } from '@react-three/fiber'
-import { Village } from './world/Village'
+import React, { useEffect } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Lenis from 'lenis';
+import { ThemeProvider } from './context/ThemeContext';
+import { AudioProvider } from './context/AudioContext';
+import Home from './pages/Home';
 
 function App() {
+  useEffect(() => {
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      direction: 'vertical',
+      smoothWheel: true,
+    });
+
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+
+    requestAnimationFrame(raf);
+
+    return () => {
+      lenis.destroy();
+    };
+  }, []);
+
   return (
-    <Canvas style={{ width: '100vw', height: '100vh' }} camera={{ position: [0, 10, 20] }}>
-      <ambientLight intensity={0.5} />
-      <directionalLight position={[10, 20, 10]} castShadow />
-      <Village />
-    </Canvas>
-  )
+    <ThemeProvider>
+      <AudioProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Home />} />
+          </Routes>
+        </BrowserRouter>
+      </AudioProvider>
+    </ThemeProvider>
+  );
 }
-export default App
+
+export default App;
