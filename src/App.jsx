@@ -1,18 +1,13 @@
-import { Suspense, useState, useEffect } from 'react'
-import { Experience } from './scene/Experience'
-import { LoadingScreen } from './ui/LoadingScreen'
+import { Canvas } from '@react-three/fiber'
+import { Village } from './world/Village'
 
 function App() {
-  const [progress, setProgress] = useState(0)
-
   return (
-    <>
-      <LoadingScreen progress={progress} />
-      <Suspense fallback={null}>
-        <Experience onProgress={setProgress} />
-      </Suspense>
-    </>
+    <Canvas style={{ width: '100vw', height: '100vh' }} camera={{ position: [0, 10, 20] }}>
+      <ambientLight intensity={0.5} />
+      <directionalLight position={[10, 20, 10]} castShadow />
+      <Village />
+    </Canvas>
   )
 }
-
 export default App

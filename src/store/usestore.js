@@ -6,5 +6,8 @@ export const useStore = create((set) => ({
   interactionTarget: null,
   setPlayerPosition: (pos) => set({ playerPosition: pos }),
   setInteraction: (target) =>
-    set({ isInteracting: !!target, interactionTarget: target }),
+    set({
+      isInteracting: !!target,
+      interactionTarget: target,
+    }),
 }));

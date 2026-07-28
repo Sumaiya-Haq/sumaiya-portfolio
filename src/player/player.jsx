@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react'
+import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { useControls } from '../hooks/useControls'
 import { useStore } from '../store/useStore'
@@ -27,18 +27,16 @@ export function Player() {
     if (moveVec.length() > 0) {
       moveVec.normalize().multiplyScalar(speed * delta)
       ref.current.position.add(moveVec)
-      // rotate character to face movement direction
       const angle = Math.atan2(moveVec.x, moveVec.z)
       ref.current.rotation.y = angle
     }
 
-    // simple jump (no physics yet)
+    // simple jump & gravity
     if (controls.jump && ref.current.position.y <= 0.1) {
       ref.current.position.y = 0.5
     }
-    // gravity
     if (ref.current.position.y > 0) {
-      ref.current.position.y -= 0.5 * delta
+      ref.current.position.y -= 0.8 * delta
     }
     if (ref.current.position.y < 0) ref.current.position.y = 0
 
@@ -47,15 +45,14 @@ export function Player() {
 
   return (
     <group ref={ref} position={[0, 0, 0]}>
-      <mesh position={[0, 0.5, 0]}>
+      <mesh position={[0, 0.5, 0]} castShadow>
         <capsuleGeometry args={[0.4, 0.8, 4, 8]} />
         <meshStandardMaterial color="#e8b88a" />
       </mesh>
-      <mesh position={[0, 1.4, 0]}>
+      <mesh position={[0, 1.4, 0]} castShadow>
         <sphereGeometry args={[0.3]} />
         <meshStandardMaterial color="#f5d0b8" />
       </mesh>
-      {/* placeholder model: you can replace with your own */}
     </group>
   )
 }
