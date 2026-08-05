@@ -1,20 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FiFolder } from 'react-icons/fi';
 import ProjectCard from './ProjectCard';
 import ProjectModal from './ProjectModal';
-import { PROJECTS_DATA } from '../../utils/constants';
+import { getProjectsData } from '../../utils/constants';
 
 export const Projects = () => {
+  const [projectsData, setProjectsData] = useState(getProjectsData());
   const [activeFilter, setActiveFilter] = useState('All');
   const [selectedProject, setSelectedProject] = useState(null);
+
+  useEffect(() => {
+    const handleUpdate = () => setProjectsData(getProjectsData());
+    window.addEventListener('portfolio_data_updated', handleUpdate);
+    return () => window.removeEventListener('portfolio_data_updated', handleUpdate);
+  }, []);
 
   const categories = ['All', 'AI', '3D & Web', 'Full Stack'];
 
   const filteredProjects =
     activeFilter === 'All'
-      ? PROJECTS_DATA
-      : PROJECTS_DATA.filter((p) => p.category === activeFilter);
+      ? projectsData
+      : projectsData.filter((p) => p.category === activeFilter);
 
   return (
     <section id="projects" className="relative py-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto z-10">
@@ -75,7 +82,7 @@ export const Projects = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {filteredProjects.map((project, idx) => (
           <motion.div
-            key={project.id}
+            key={project.id || idx}
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}

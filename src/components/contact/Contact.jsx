@@ -1,17 +1,24 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FiMail, FiSend, FiMapPin, FiGithub, FiLinkedin, FiTwitter, FiCheckCircle } from 'react-icons/fi';
 import emailjs from '@emailjs/browser';
 import confetti from 'canvas-confetti';
 import GlassCard from '../ui/GlassCard';
 import Button from '../ui/Button';
-import { PERSONAL_INFO } from '../../utils/constants';
+import { getPersonalInfo } from '../../utils/constants';
 
 export const Contact = () => {
+  const [personalInfo, setPersonalInfo] = useState(getPersonalInfo());
   const formRef = useRef();
   const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
   const [status, setStatus] = useState('idle'); // 'idle' | 'sending' | 'success' | 'error'
   const [errorMessage, setErrorMessage] = useState('');
+
+  useEffect(() => {
+    const handleUpdate = () => setPersonalInfo(getPersonalInfo());
+    window.addEventListener('portfolio_data_updated', handleUpdate);
+    return () => window.removeEventListener('portfolio_data_updated', handleUpdate);
+  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -30,7 +37,7 @@ export const Contact = () => {
     try {
       // EmailJS configuration check
       await emailjs.send(
-        'YOUR_SERVICE_ID', // Replaced dynamically or configured via EmailJS dashboard
+        'YOUR_SERVICE_ID',
         'YOUR_TEMPLATE_ID',
         {
           from_name: formData.name,
@@ -111,7 +118,7 @@ export const Contact = () => {
 
             <div className="space-y-4 pt-4 border-t border-white/10 text-sm font-body">
               <a
-                href={`mailto:${PERSONAL_INFO.email}`}
+                href={`mailto:${personalInfo.email}`}
                 className="flex items-center gap-3 text-text-muted hover:text-accent transition-colors"
               >
                 <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-accent">
@@ -119,7 +126,7 @@ export const Contact = () => {
                 </div>
                 <div>
                   <p className="text-xs font-numbers text-text-muted">Email</p>
-                  <p className="text-sm font-medium text-white">{PERSONAL_INFO.email}</p>
+                  <p className="text-sm font-medium text-white">{personalInfo.email}</p>
                 </div>
               </a>
 
@@ -129,7 +136,7 @@ export const Contact = () => {
                 </div>
                 <div>
                   <p className="text-xs font-numbers text-text-muted">Location</p>
-                  <p className="text-sm font-medium text-white">{PERSONAL_INFO.location}</p>
+                  <p className="text-sm font-medium text-white">{personalInfo.location}</p>
                 </div>
               </div>
             </div>
@@ -138,36 +145,42 @@ export const Contact = () => {
             <div className="pt-6 border-t border-white/10 space-y-3">
               <p className="text-xs font-heading uppercase text-accent tracking-wider">Social Channels</p>
               <div className="flex items-center gap-3">
-                <a
-                  href={PERSONAL_INFO.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-text-muted hover:text-accent hover:scale-110 transition-all"
-                >
-                  <FiGithub />
-                </a>
-                <a
-                  href={PERSONAL_INFO.linkedin}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-text-muted hover:text-accent hover:scale-110 transition-all"
-                >
-                  <FiLinkedin />
-                </a>
-                <a
-                  href={PERSONAL_INFO.twitter}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-text-muted hover:text-accent hover:scale-110 transition-all"
-                >
-                  <FiTwitter />
-                </a>
+                {personalInfo.github && (
+                  <a
+                    href={personalInfo.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-text-muted hover:text-accent hover:scale-110 transition-all"
+                  >
+                    <FiGithub />
+                  </a>
+                )}
+                {personalInfo.linkedin && (
+                  <a
+                    href={personalInfo.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-text-muted hover:text-accent hover:scale-110 transition-all"
+                  >
+                    <FiLinkedin />
+                  </a>
+                )}
+                {personalInfo.twitter && (
+                  <a
+                    href={personalInfo.twitter}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-text-muted hover:text-accent hover:scale-110 transition-all"
+                  >
+                    <FiTwitter />
+                  </a>
+                )}
               </div>
             </div>
           </GlassCard>
         </motion.div>
 
-        {/* Contact Glassmorphism Form */}
+        {/* Contact Form */}
         <motion.div
           initial={{ opacity: 0, x: 30 }}
           whileInView={{ opacity: 1, x: 0 }}

@@ -1,11 +1,19 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FiBookOpen, FiExternalLink, FiAward } from 'react-icons/fi';
 import GlassCard from '../ui/GlassCard';
 import Button from '../ui/Button';
-import { RESEARCH_DATA } from '../../utils/constants';
+import { getResearchData } from '../../utils/constants';
 
 export const Research = () => {
+  const [researchData, setResearchData] = useState(getResearchData());
+
+  useEffect(() => {
+    const handleUpdate = () => setResearchData(getResearchData());
+    window.addEventListener('portfolio_data_updated', handleUpdate);
+    return () => window.removeEventListener('portfolio_data_updated', handleUpdate);
+  }, []);
+
   return (
     <section id="research" className="relative py-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto z-10">
       {/* Ambient Lighting */}
@@ -46,7 +54,7 @@ export const Research = () => {
 
       {/* Research Papers Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {RESEARCH_DATA.map((paper, idx) => (
+        {researchData.map((paper, idx) => (
           <motion.div
             key={idx}
             initial={{ opacity: 0, y: 30 }}

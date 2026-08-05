@@ -1,10 +1,18 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { FiBriefcase, FiCalendar, FiMapPin } from 'react-icons/fi';
+import { FiBriefcase, FiCalendar } from 'react-icons/fi';
 import GlassCard from '../ui/GlassCard';
-import { EXPERIENCE_DATA } from '../../utils/constants';
+import { getExperienceData } from '../../utils/constants';
 
 export const Experience = () => {
+  const [experienceData, setExperienceData] = useState(getExperienceData());
+
+  useEffect(() => {
+    const handleUpdate = () => setExperienceData(getExperienceData());
+    window.addEventListener('portfolio_data_updated', handleUpdate);
+    return () => window.removeEventListener('portfolio_data_updated', handleUpdate);
+  }, []);
+
   return (
     <section id="experience" className="relative py-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto z-10">
       {/* Ambient Lighting */}
@@ -49,7 +57,7 @@ export const Experience = () => {
         <div className="absolute left-4 sm:left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-primary via-secondary to-accent opacity-30 transform -translate-x-1/2 hidden sm:block" />
 
         <div className="space-y-12">
-          {EXPERIENCE_DATA.map((exp, idx) => {
+          {experienceData.map((exp, idx) => {
             const isEven = idx % 2 === 0;
             return (
               <motion.div
@@ -88,7 +96,7 @@ export const Experience = () => {
 
                     {/* Tech Pills */}
                     <div className="pt-2 flex flex-wrap gap-2">
-                      {exp.technologies.map((tech, tIdx) => (
+                      {exp.technologies?.map((tech, tIdx) => (
                         <span
                           key={tIdx}
                           className="px-3 py-1 text-xs font-numbers font-medium rounded-full bg-primary/10 border border-primary/25 text-primary-light"

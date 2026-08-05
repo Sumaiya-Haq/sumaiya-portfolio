@@ -1,4 +1,13 @@
-export const PERSONAL_INFO = {
+/**
+ * ==============================================================================
+ * 🌟 SUMAIYAVERSE PORTFOLIO - PERSONAL INFORMATION CONFIG (তথ্য পরিবর্তন ফাইল)
+ * ==============================================================================
+ * আপনি আপনার পোর্টফোলিওর সকল তথ্য ২ টি উপায়ে পরিবর্তন করতে পারবেন:
+ * ১. ওয়েবসাইটে থাকা "Edit Info / তথ্য পরিবর্তন" বাটনে ক্লিক করে সরাসরি ব্রাউজারেই চেঞ্জ করতে পারবেন।
+ * ২. অথবা নিচের এই constants.js ফাইলের ডাটাগুলো আপনার আসল তথ্য দিয়ে এডিট করে সেভ করতে পারেন।
+ */
+
+export const DEFAULT_PERSONAL_INFO = {
   name: "Sumaiya Haq",
   title: "AI Engineer | Full Stack Developer | Computer Science Student",
   location: "Bangladesh / Remote",
@@ -6,6 +15,7 @@ export const PERSONAL_INFO = {
   github: "https://github.com/Sumaiya-Haq",
   linkedin: "https://linkedin.com/in/sumaiya-haq",
   twitter: "https://twitter.com/SumaiyaHaqDev",
+  avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80",
   bio: "I am passionate about Artificial Intelligence, Large Language Models, Full Stack Development, and building immersive digital experiences. I enjoy solving complex problems, creating modern applications, and continuously learning new technologies.",
   stats: [
     { label: "Years Experience", value: "3+" },
@@ -15,7 +25,7 @@ export const PERSONAL_INFO = {
   ]
 };
 
-export const SKILL_CATEGORIES = [
+export const DEFAULT_SKILL_CATEGORIES = [
   {
     category: "AI & Machine Learning",
     color: "#7C3AED",
@@ -62,7 +72,7 @@ export const SKILL_CATEGORIES = [
   }
 ];
 
-export const EXPERIENCE_DATA = [
+export const DEFAULT_EXPERIENCE_DATA = [
   {
     role: "AI & LLM Solutions Developer",
     company: "Autonomous AI Labs",
@@ -74,7 +84,7 @@ export const EXPERIENCE_DATA = [
     role: "Full Stack Engineer Intern",
     company: "TechNova Systems",
     period: "2022 - 2023",
-    description: "Developed modern web web applications using React, Tailwind CSS, and Node.js. Built interactive dashboard analytics and scalable REST APIs.",
+    description: "Developed modern web applications using React, Tailwind CSS, and Node.js. Built interactive dashboard analytics and scalable REST APIs.",
     technologies: ["React", "Node.js", "Express", "MongoDB", "Tailwind CSS"]
   },
   {
@@ -86,7 +96,7 @@ export const EXPERIENCE_DATA = [
   }
 ];
 
-export const PROJECTS_DATA = [
+export const DEFAULT_PROJECTS_DATA = [
   {
     id: "neural-rag-assistant",
     title: "Neural-RAG: Enterprise Knowledge Agent",
@@ -141,7 +151,7 @@ export const PROJECTS_DATA = [
   }
 ];
 
-export const RESEARCH_DATA = [
+export const DEFAULT_RESEARCH_DATA = [
   {
     title: "Efficient Context Compression for Multimodal Large Language Models",
     publisher: "Under Review / Tech ArXiv",
@@ -158,17 +168,21 @@ export const RESEARCH_DATA = [
   }
 ];
 
-export const EDUCATION_DATA = [
+export const DEFAULT_EDUCATION_DATA = [
   {
     degree: "Bachelor of Science in Computer Science & Engineering",
     institution: "Premier University",
     year: "2021 - Present",
     grade: "CGPA: 3.92 / 4.00",
-    highlights: ["Focus on Artificial Intelligence, Machine Learning, and Software Architecture", "Dean's Honor List for 6 Consecutive Semesters", "Lead Coordinator of AI Student Society"]
+    highlights: [
+      "Focus on Artificial Intelligence, Machine Learning, and Software Architecture",
+      "Dean's Honor List for 6 Consecutive Semesters",
+      "Lead Coordinator of AI Student Society"
+    ]
   }
 ];
 
-export const CERTIFICATES_DATA = [
+export const DEFAULT_CERTIFICATES_DATA = [
   {
     title: "Deep Learning Specialization",
     issuer: "DeepLearning.AI / Coursera",
@@ -189,7 +203,7 @@ export const CERTIFICATES_DATA = [
   }
 ];
 
-export const TESTIMONIALS_DATA = [
+export const DEFAULT_TESTIMONIALS_DATA = [
   {
     name: "Dr. Aris Thorne",
     role: "AI Research Director",
@@ -205,3 +219,59 @@ export const TESTIMONIALS_DATA = [
     avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80"
   }
 ];
+
+/* Helper functions to get data from LocalStorage if user customized it via UI */
+const STORAGE_KEY = "sumaiya_portfolio_custom_data_v1";
+
+export const getCustomData = () => {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch (e) {
+    console.error("Failed to parse custom data", e);
+    return null;
+  }
+};
+
+export const getPersonalInfo = () => getCustomData()?.personalInfo || DEFAULT_PERSONAL_INFO;
+export const getSkillCategories = () => getCustomData()?.skillCategories || DEFAULT_SKILL_CATEGORIES;
+export const getExperienceData = () => getCustomData()?.experienceData || DEFAULT_EXPERIENCE_DATA;
+export const getProjectsData = () => getCustomData()?.projectsData || DEFAULT_PROJECTS_DATA;
+export const getResearchData = () => getCustomData()?.researchData || DEFAULT_RESEARCH_DATA;
+export const getEducationData = () => getCustomData()?.educationData || DEFAULT_EDUCATION_DATA;
+export const getCertificatesData = () => getCustomData()?.certificatesData || DEFAULT_CERTIFICATES_DATA;
+export const getTestimonialsData = () => getCustomData()?.testimonialsData || DEFAULT_TESTIMONIALS_DATA;
+
+export const saveCustomData = (newCustomData) => {
+  if (typeof window === "undefined") return;
+  try {
+    const current = getCustomData() || {};
+    const merged = { ...current, ...newCustomData };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+    window.dispatchEvent(new Event("portfolio_data_updated"));
+  } catch (e) {
+    console.error("Failed to save custom data", e);
+  }
+};
+
+export const resetCustomData = () => {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+    window.dispatchEvent(new Event("portfolio_data_updated"));
+  } catch (e) {
+    console.error("Failed to reset custom data", e);
+  }
+};
+
+/* Keep exports backward compatible */
+export const PERSONAL_INFO = DEFAULT_PERSONAL_INFO;
+export const SKILL_CATEGORIES = DEFAULT_SKILL_CATEGORIES;
+export const EXPERIENCE_DATA = DEFAULT_EXPERIENCE_DATA;
+export const PROJECTS_DATA = DEFAULT_PROJECTS_DATA;
+export const RESEARCH_DATA = DEFAULT_RESEARCH_DATA;
+export const EDUCATION_DATA = DEFAULT_EDUCATION_DATA;
+export const CERTIFICATES_DATA = DEFAULT_CERTIFICATES_DATA;
+export const TESTIMONIALS_DATA = DEFAULT_TESTIMONIALS_DATA;
+

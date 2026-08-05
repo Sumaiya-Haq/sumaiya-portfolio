@@ -1,10 +1,22 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FiBook, FiAward, FiCheckCircle } from 'react-icons/fi';
 import GlassCard from '../ui/GlassCard';
-import { EDUCATION_DATA, CERTIFICATES_DATA } from '../../utils/constants';
+import { getEducationData, getCertificatesData } from '../../utils/constants';
 
 export const Education = () => {
+  const [educationData, setEducationData] = useState(getEducationData());
+  const [certificatesData, setCertificatesData] = useState(getCertificatesData());
+
+  useEffect(() => {
+    const handleUpdate = () => {
+      setEducationData(getEducationData());
+      setCertificatesData(getCertificatesData());
+    };
+    window.addEventListener('portfolio_data_updated', handleUpdate);
+    return () => window.removeEventListener('portfolio_data_updated', handleUpdate);
+  }, []);
+
   return (
     <section id="education" className="relative py-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto z-10">
       {/* Background Ambient Glow */}
@@ -46,7 +58,7 @@ export const Education = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Education Degree Main Card */}
         <div className="lg:col-span-1">
-          {EDUCATION_DATA.map((edu, idx) => (
+          {educationData.map((edu, idx) => (
             <motion.div
               key={idx}
               initial={{ opacity: 0, y: 30 }}
@@ -71,7 +83,7 @@ export const Education = () => {
                 <div className="space-y-2 pt-4 border-t border-white/10">
                   <h4 className="text-xs font-heading uppercase text-text-muted tracking-wider">Highlights</h4>
                   <ul className="space-y-2 text-xs font-body text-text-muted">
-                    {edu.highlights.map((h, hIdx) => (
+                    {edu.highlights?.map((h, hIdx) => (
                       <li key={hIdx} className="flex items-start gap-2">
                         <FiCheckCircle className="text-accent flex-shrink-0 mt-0.5" />
                         <span>{h}</span>
@@ -91,7 +103,7 @@ export const Education = () => {
           </h3>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {CERTIFICATES_DATA.map((cert, idx) => (
+            {certificatesData.map((cert, idx) => (
               <motion.div
                 key={idx}
                 initial={{ opacity: 0, y: 30 }}

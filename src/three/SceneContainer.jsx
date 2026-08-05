@@ -1,26 +1,34 @@
 import React, { Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Preload } from '@react-three/drei';
+import { Preload } from '@react-three/drei';
 
-export const SceneContainer = ({ children, cameraPosition = [0, 8, 24] }) => {
+export const SceneContainer = ({ children, cameraPosition = [18, 18, 22] }) => {
   return (
-    <div className="canvas-container">
+    <div className="canvas-container w-full h-full bg-[#589dc9]">
       <Canvas
         shadows
-        camera={{ position: cameraPosition, fov: 45, near: 0.1, far: 1000 }}
+        camera={{ position: cameraPosition, fov: 38, near: 0.1, far: 1000 }}
         gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
       >
-        <ambientLight intensity={0.4} />
+        {/* Soft Sky Blue Background Color inside R3F Canvas */}
+        <color attach="background" args={['#589dc9']} />
+
+        {/* Crisp Daylight Lighting setup matching reference image */}
+        <ambientLight intensity={1.1} />
         <directionalLight
-          position={[15, 25, 15]}
-          intensity={1.2}
+          position={[25, 40, 20]}
+          intensity={1.8}
+          color="#ffffff"
           castShadow
           shadow-mapSize-width={2048}
           shadow-mapSize-height={2048}
-          shadow-bias={-0.0001}
+          shadow-bias={-0.00005}
         />
-        <pointLight position={[-10, 10, -10]} intensity={0.5} color="#22D3EE" />
-        <pointLight position={[10, 5, 10]} intensity={0.6} color="#7C3AED" />
+        <directionalLight
+          position={[-15, 20, -15]}
+          intensity={0.5}
+          color="#bae6fd"
+        />
 
         <Suspense fallback={null}>
           {children}

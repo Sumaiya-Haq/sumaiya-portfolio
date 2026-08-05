@@ -1,19 +1,25 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { FiCode, FiCpu, FiDatabase, FiTerminal, FiLayers } from 'react-icons/fi';
-import GlassCard from '../ui/GlassCard';
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { FiCode } from 'react-icons/fi';
 import SkillCard from './SkillCard';
-import { SKILL_CATEGORIES } from '../../utils/constants';
+import { getSkillCategories } from '../../utils/constants';
 
 export const Skills = () => {
+  const [skillCategories, setSkillCategories] = useState(getSkillCategories());
   const [activeTab, setActiveTab] = useState('All');
 
-  const categories = ['All', ...SKILL_CATEGORIES.map((c) => c.category)];
+  useEffect(() => {
+    const handleUpdate = () => setSkillCategories(getSkillCategories());
+    window.addEventListener('portfolio_data_updated', handleUpdate);
+    return () => window.removeEventListener('portfolio_data_updated', handleUpdate);
+  }, []);
+
+  const categories = ['All', ...skillCategories.map((c) => c.category)];
 
   const filteredCategories =
     activeTab === 'All'
-      ? SKILL_CATEGORIES
-      : SKILL_CATEGORIES.filter((c) => c.category === activeTab);
+      ? skillCategories
+      : skillCategories.filter((c) => c.category === activeTab);
 
   return (
     <section id="skills" className="relative py-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto z-10">

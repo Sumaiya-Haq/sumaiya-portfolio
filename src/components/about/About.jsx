@@ -1,14 +1,14 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FiCpu, FiCode, FiLayers, FiCheckCircle } from 'react-icons/fi';
 import GlassCard from '../ui/GlassCard';
 import AnimatedCounter from './AnimatedCounter';
-import { PERSONAL_INFO } from '../../utils/constants';
+import { getPersonalInfo } from '../../utils/constants';
 
 const HIGHLIGHT_CARDS = [
   {
     icon: FiCpu,
-    title: 'AI & Large Language Models',
+    title: 'AI & Machine Learning',
     description: 'Specializing in RAG architecture, LLM fine-tuning, prompt engineering, multi-agent frameworks (LangChain/LlamaIndex), and vector databases.',
     color: '#7C3AED'
   },
@@ -27,6 +27,14 @@ const HIGHLIGHT_CARDS = [
 ];
 
 export const About = () => {
+  const [personalInfo, setPersonalInfo] = useState(getPersonalInfo());
+
+  useEffect(() => {
+    const handleUpdate = () => setPersonalInfo(getPersonalInfo());
+    window.addEventListener('portfolio_data_updated', handleUpdate);
+    return () => window.removeEventListener('portfolio_data_updated', handleUpdate);
+  }, []);
+
   return (
     <section id="about" className="relative py-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto z-10">
       {/* Background Ambient Glow */}
@@ -61,7 +69,7 @@ export const About = () => {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="text-text-muted max-w-3xl mx-auto text-base sm:text-lg leading-relaxed font-body"
         >
-          {PERSONAL_INFO.bio}
+          {personalInfo.bio}
         </motion.p>
       </div>
 
@@ -103,7 +111,7 @@ export const About = () => {
 
       {/* Animated Counter Stats Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-        {PERSONAL_INFO.stats.map((stat, idx) => (
+        {personalInfo.stats?.map((stat, idx) => (
           <AnimatedCounter key={idx} value={stat.value} label={stat.label} />
         ))}
       </div>
